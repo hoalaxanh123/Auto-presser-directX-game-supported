@@ -31,6 +31,16 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SPAM_TOOL\Form_Alert.resx">
+      <DependentUpon>Form_Alert.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SPAM_TOOL\Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System" />
     <Reference Include="InputManager">
@@ -38,16 +48,63 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Core" />
-    <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="Global.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="SPAM_TOOL\Form_Alert.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SPAM_TOOL\Form_Alert.Designer.cs">
+      <DependentUpon>Form_Alert.cs</DependentUpon>
+    </Compile>
     <Compile Include="SPAM_TOOL\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="SPAM_TOOL\Hotkey.cs" />
     <Compile Include="SPAM_TOOL\Program.cs" />
     <Compile Include="SPAM_TOOL\Properties\Resources.cs" />
     <Compile Include="SPAM_TOOL\Properties\Settings.cs" />
     <Compile Include="VKB\KeyBoard.cs" />
-    <EmbeddedResource Include="SPAM_TOOL.Form1.resources" />
-    <EmbeddedResource Include="SPAM_TOOL.Properties.Resources.resources" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SPAM_TOOL\Resources\error.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SPAM_TOOL\Resources\icons8_cancel_25px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SPAM_TOOL\Resources\info.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SPAM_TOOL\Resources\success.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SPAM_TOOL\Resources\warning.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CustomAlertBoxDemo\Resources\error.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CustomAlertBoxDemo\Resources\icons8_cancel_25px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CustomAlertBoxDemo\Resources\info.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CustomAlertBoxDemo\Resources\success.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CustomAlertBoxDemo\Resources\warning.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SPAM_TOOL\Resources\about.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SPAM_TOOL\Resources\menu.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SPAM_TOOL\Resources\exit.ico" />
   </ItemGroup>
 </Project>

@@ -1,5 +1,6 @@
 ﻿namespace SPAM_TOOL
 {
+    using CustomAlertBoxDemo;
     using InputManager;
     using System;
     using System.Collections.Generic;
@@ -7,6 +8,7 @@
     using System.Diagnostics;
     using System.Drawing;
     using System.Linq;
+    using System.Media;
     using System.Runtime.InteropServices;
     using System.Threading;
     using System.Windows.Forms;
@@ -29,18 +31,49 @@
         protected internal System.Windows.Forms.Timer timer;
         private NumericUpDown txtReleaseTime;
         private NumericUpDown txtTime;
+        private MenuStrip menuStrip1;
+        private ToolStripMenuItem fileToolStripMenuItem;
+        private ToolStripMenuItem exitToolStripMenuItem;
+        private ToolStripMenuItem helpToolStripMenuItem;
+        private NumericUpDown numericUpDown_LoopTime;
+        private Label label5;
+        KeyboardHook hook = new KeyboardHook();
 
         public Form1()
         {
             this.InitializeComponent();
+
+            // register the event that is fired after the key press.
+            hook.KeyPressed += new EventHandler<KeyPressedEventArgs>(hook_KeyPressed);
+            // register the control + alt + F12 combination as hot key.
+            hook.RegisterHotKey(SPAM_TOOL.ModifierKeys.Control, Keys.F7);
+        }
+
+        void hook_KeyPressed(object sender, KeyPressedEventArgs e)
+        {
+            //MessageBox.Show(e.Modifier.ToString() + " + " + e.Key.ToString());
+            this.btnStart.PerformClick();
         }
 
         private void btn_Clear_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Bạn chắc chứ ?", "Cảnh b\x00e1o", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk) == DialogResult.Yes)
+            if (this.richTextBox_Log.Text == "")
+            {
+                return;
+            }
+            if (MessageBox.Show("Are you sure ?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
                 this.richTextBox_Log.Clear();
             }
+        }
+        public void Alert(string msg, Form_Alert.enmType type)
+        {
+            Form_Alert frm = new Form_Alert();
+            frm.showAlert(msg, type);
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.Alert("Success Alert", Form_Alert.enmType.Success);
         }
 
         private void btnStart_Click(object sender, EventArgs e)
@@ -56,6 +89,8 @@
                     this.groupBox_Setting.Enabled = false;
                     this.btn_Clear.Enabled = false;
                     this.logToBox("Started");
+                    SystemSounds.Beep.Play();
+                    this.Alert("The auto press is running", Form_Alert.enmType.Info);
                 }
                 else
                 {
@@ -65,6 +100,8 @@
                     this.groupBox_Setting.Enabled = true;
                     this.btn_Clear.Enabled = true;
                     this.logToBox("Stopped");
+                    SystemSounds.Hand.Play();
+                    this.Alert("The auto press is stopped", Form_Alert.enmType.Warning);
                 }
             }
         }
@@ -82,159 +119,277 @@
             }
         }
 
-        public static void HandleKeyPress(byte keyName)
-        {
-            KeyBoard.keybd_event(keyName, 0, 0, 0);
-            KeyBoard.keybd_event(keyName, 0, 2, 0);
-        }
-
         private void InitializeComponent()
         {
-            this.components = new Container();
-            this.btnStart = new Button();
-            this.label1 = new Label();
-            this.label2 = new Label();
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            this.btnStart = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.timer = new System.Windows.Forms.Timer(this.components);
-            this.txtTime = new NumericUpDown();
-            this.richTextBox_Log = new RichTextBox();
-            this.btn_Clear = new Button();
-            this.txtReleaseTime = new NumericUpDown();
-            this.label4 = new Label();
-            this.comboBox_Button = new ComboBox();
-            this.groupBox_Setting = new GroupBox();
-            this.groupBox2 = new GroupBox();
-            this.groupBox_Logs = new GroupBox();
-            this.richTextBox1 = new RichTextBox();
-            this.txtTime.BeginInit();
-            this.txtReleaseTime.BeginInit();
+            this.txtTime = new System.Windows.Forms.NumericUpDown();
+            this.richTextBox_Log = new System.Windows.Forms.RichTextBox();
+            this.btn_Clear = new System.Windows.Forms.Button();
+            this.txtReleaseTime = new System.Windows.Forms.NumericUpDown();
+            this.label4 = new System.Windows.Forms.Label();
+            this.comboBox_Button = new System.Windows.Forms.ComboBox();
+            this.groupBox_Setting = new System.Windows.Forms.GroupBox();
+            this.numericUpDown_LoopTime = new System.Windows.Forms.NumericUpDown();
+            this.label5 = new System.Windows.Forms.Label();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.groupBox_Logs = new System.Windows.Forms.GroupBox();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            ((System.ComponentModel.ISupportInitialize)(this.txtTime)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtReleaseTime)).BeginInit();
             this.groupBox_Setting.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_LoopTime)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.groupBox_Logs.SuspendLayout();
-            base.SuspendLayout();
-            this.btnStart.Location = new Point(0x2b, 30);
+            this.menuStrip1.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // btnStart
+            // 
+            this.btnStart.Location = new System.Drawing.Point(22, 27);
             this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new Size(0x19e, 0x25);
+            this.btnStart.Size = new System.Drawing.Size(414, 37);
             this.btnStart.TabIndex = 2;
             this.btnStart.Text = "Start";
             this.btnStart.UseVisualStyleBackColor = true;
-            this.btnStart.Click += new EventHandler(this.btnStart_Click);
+            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
+            // 
+            // label1
+            // 
             this.label1.AutoSize = true;
-            this.label1.Location = new Point(3, 0x18);
+            this.label1.Location = new System.Drawing.Point(3, 24);
             this.label1.Name = "label1";
-            this.label1.Size = new Size(0x47, 13);
+            this.label1.Size = new System.Drawing.Size(38, 13);
             this.label1.TabIndex = 3;
-            this.label1.Text = "Button (code)";
+            this.label1.Text = "Button";
+            // 
+            // label2
+            // 
             this.label2.AutoSize = true;
-            this.label2.Location = new Point(0x98, 0x19);
+            this.label2.Location = new System.Drawing.Point(152, 25);
             this.label2.Name = "label2";
-            this.label2.Size = new Size(0x5f, 13);
+            this.label2.Size = new System.Drawing.Size(42, 13);
             this.label2.TabIndex = 4;
-            this.label2.Text = "Time (mini second)";
-            this.timer.Interval = 0x3e8;
-            this.timer.Tick += new EventHandler(this.timer_Tick);
-            this.txtTime.Location = new Point(0x9b, 0x29);
-            int[] bits = new int[4];
-            bits[0] = 0x3b9ac9ff;
-            this.txtTime.Maximum = new decimal(bits);
+            this.label2.Text = "Interval";
+            // 
+            // timer
+            // 
+            this.timer.Interval = 1000;
+            this.timer.Tick += new System.EventHandler(this.timer_Tick);
+            // 
+            // txtTime
+            // 
+            this.txtTime.Location = new System.Drawing.Point(155, 41);
+            this.txtTime.Maximum = new decimal(new int[] {
+            999999999,
+            0,
+            0,
+            0});
             this.txtTime.Name = "txtTime";
-            this.txtTime.Size = new Size(0x5c, 20);
+            this.txtTime.Size = new System.Drawing.Size(54, 20);
             this.txtTime.TabIndex = 7;
-            int[] numArray2 = new int[4];
-            numArray2[0] = 0x1f40;
-            this.txtTime.Value = new decimal(numArray2);
-            this.richTextBox_Log.Location = new Point(0x11, 0x36);
+            this.txtTime.Value = new decimal(new int[] {
+            2000,
+            0,
+            0,
+            0});
+            // 
+            // richTextBox_Log
+            // 
+            this.richTextBox_Log.Location = new System.Drawing.Point(17, 54);
             this.richTextBox_Log.Name = "richTextBox_Log";
             this.richTextBox_Log.ReadOnly = true;
-            this.richTextBox_Log.Size = new Size(380, 0x60);
+            this.richTextBox_Log.Size = new System.Drawing.Size(380, 85);
             this.richTextBox_Log.TabIndex = 8;
             this.richTextBox_Log.Text = "";
-            this.btn_Clear.Location = new Point(0x11, 0x19);
+            // 
+            // btn_Clear
+            // 
+            this.btn_Clear.Location = new System.Drawing.Point(17, 25);
             this.btn_Clear.Name = "btn_Clear";
-            this.btn_Clear.Size = new Size(0x4b, 0x17);
+            this.btn_Clear.Size = new System.Drawing.Size(75, 23);
             this.btn_Clear.TabIndex = 10;
             this.btn_Clear.Text = "Clear";
             this.btn_Clear.UseVisualStyleBackColor = true;
-            this.btn_Clear.Click += new EventHandler(this.btn_Clear_Click);
-            this.txtReleaseTime.Location = new Point(0x115, 40);
-            int[] numArray3 = new int[4];
-            numArray3[0] = 0x3b9ac9ff;
-            this.txtReleaseTime.Maximum = new decimal(numArray3);
+            this.btn_Clear.Click += new System.EventHandler(this.btn_Clear_Click);
+            // 
+            // txtReleaseTime
+            // 
+            this.txtReleaseTime.Location = new System.Drawing.Point(248, 40);
+            this.txtReleaseTime.Maximum = new decimal(new int[] {
+            999999999,
+            0,
+            0,
+            0});
             this.txtReleaseTime.Name = "txtReleaseTime";
-            this.txtReleaseTime.Size = new Size(0x5c, 20);
+            this.txtReleaseTime.Size = new System.Drawing.Size(46, 20);
             this.txtReleaseTime.TabIndex = 12;
-            int[] numArray4 = new int[4];
-            numArray4[0] = 200;
-            this.txtReleaseTime.Value = new decimal(numArray4);
+            this.txtReleaseTime.Value = new decimal(new int[] {
+            200,
+            0,
+            0,
+            0});
+            // 
+            // label4
+            // 
             this.label4.AutoSize = true;
-            this.label4.Location = new Point(0x112, 0x18);
+            this.label4.Location = new System.Drawing.Point(245, 24);
             this.label4.Name = "label4";
-            this.label4.Size = new Size(0x85, 13);
+            this.label4.Size = new System.Drawing.Size(68, 13);
             this.label4.TabIndex = 11;
-            this.label4.Text = "Release time (mini second)";
+            this.label4.Text = "Release time";
+            // 
+            // comboBox_Button
+            // 
             this.comboBox_Button.FormattingEnabled = true;
-            this.comboBox_Button.Location = new Point(6, 40);
+            this.comboBox_Button.Location = new System.Drawing.Point(6, 40);
             this.comboBox_Button.Name = "comboBox_Button";
-            this.comboBox_Button.Size = new Size(0x7b, 0x15);
+            this.comboBox_Button.Size = new System.Drawing.Size(123, 21);
             this.comboBox_Button.TabIndex = 13;
-            this.comboBox_Button.SelectedIndexChanged += new EventHandler(this.comboBox_Button_SelectedIndexChanged);
+            this.comboBox_Button.SelectedIndexChanged += new System.EventHandler(this.comboBox_Button_SelectedIndexChanged);
+            // 
+            // groupBox_Setting
+            // 
+            this.groupBox_Setting.Controls.Add(this.numericUpDown_LoopTime);
             this.groupBox_Setting.Controls.Add(this.comboBox_Button);
             this.groupBox_Setting.Controls.Add(this.label1);
+            this.groupBox_Setting.Controls.Add(this.label5);
             this.groupBox_Setting.Controls.Add(this.label2);
             this.groupBox_Setting.Controls.Add(this.txtReleaseTime);
             this.groupBox_Setting.Controls.Add(this.txtTime);
             this.groupBox_Setting.Controls.Add(this.label4);
-            this.groupBox_Setting.Location = new Point(0x2b, 0x55);
+            this.groupBox_Setting.Location = new System.Drawing.Point(22, 81);
             this.groupBox_Setting.Name = "groupBox_Setting";
-            this.groupBox_Setting.Size = new Size(0x19e, 0x48);
+            this.groupBox_Setting.Size = new System.Drawing.Size(414, 77);
             this.groupBox_Setting.TabIndex = 15;
             this.groupBox_Setting.TabStop = false;
             this.groupBox_Setting.Text = "Setting";
+            // 
+            // numericUpDown_LoopTime
+            // 
+            this.numericUpDown_LoopTime.Enabled = false;
+            this.numericUpDown_LoopTime.Location = new System.Drawing.Point(342, 40);
+            this.numericUpDown_LoopTime.Maximum = new decimal(new int[] {
+            999999999,
+            0,
+            0,
+            0});
+            this.numericUpDown_LoopTime.Name = "numericUpDown_LoopTime";
+            this.numericUpDown_LoopTime.Size = new System.Drawing.Size(46, 20);
+            this.numericUpDown_LoopTime.TabIndex = 15;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(339, 24);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(31, 13);
+            this.label5.TabIndex = 14;
+            this.label5.Text = "Loop";
+            // 
+            // groupBox2
+            // 
             this.groupBox2.Controls.Add(this.richTextBox1);
-            this.groupBox2.Location = new Point(0x2b, 0x16d);
+            this.groupBox2.Location = new System.Drawing.Point(22, 350);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new Size(0x19e, 0x6d);
-            this.groupBox2.TabIndex = 0x10;
+            this.groupBox2.Size = new System.Drawing.Size(414, 78);
+            this.groupBox2.TabIndex = 16;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Log";
-            this.groupBox_Logs.Controls.Add(this.richTextBox_Log);
-            this.groupBox_Logs.Controls.Add(this.btn_Clear);
-            this.groupBox_Logs.Location = new Point(0x2b, 0xb3);
-            this.groupBox_Logs.Name = "groupBox_Logs";
-            this.groupBox_Logs.Size = new Size(0x19e, 180);
-            this.groupBox_Logs.TabIndex = 0x11;
-            this.groupBox_Logs.TabStop = false;
-            this.groupBox_Logs.Text = "Log";
-            this.richTextBox1.Location = new Point(0x11, 0x13);
+            this.groupBox2.Text = "Test";
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.Location = new System.Drawing.Point(17, 19);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new Size(380, 0x3a);
+            this.richTextBox1.Size = new System.Drawing.Size(380, 40);
             this.richTextBox1.TabIndex = 15;
             this.richTextBox1.Text = "";
-            base.AutoScaleDimensions = new SizeF(6f, 13f);
-            base.AutoScaleMode = AutoScaleMode.Font;
-            base.ClientSize = new Size(0x1f8, 0x200);
-            base.Controls.Add(this.groupBox_Logs);
-            base.Controls.Add(this.groupBox2);
-            base.Controls.Add(this.groupBox_Setting);
-            base.Controls.Add(this.btnStart);
-            base.Name = "Form1";
-            base.StartPosition = FormStartPosition.CenterScreen;
-            this.Text = "Spam Tool - Nguyen Van Vuong 1510289";
-            base.Load += new EventHandler(this.Form1_Load);
-            this.txtTime.EndInit();
-            this.txtReleaseTime.EndInit();
+            // 
+            // groupBox_Logs
+            // 
+            this.groupBox_Logs.Controls.Add(this.richTextBox_Log);
+            this.groupBox_Logs.Controls.Add(this.btn_Clear);
+            this.groupBox_Logs.Location = new System.Drawing.Point(22, 164);
+            this.groupBox_Logs.Name = "groupBox_Logs";
+            this.groupBox_Logs.Size = new System.Drawing.Size(414, 180);
+            this.groupBox_Logs.TabIndex = 17;
+            this.groupBox_Logs.TabStop = false;
+            this.groupBox_Logs.Text = "Log";
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem,
+            this.helpToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(462, 24);
+            this.menuStrip1.TabIndex = 19;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // fileToolStripMenuItem
+            // 
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.exitToolStripMenuItem});
+            this.fileToolStripMenuItem.Image = global::Properties.Resources.menu;
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
+            this.fileToolStripMenuItem.Text = "File";
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Image = global::Properties.Resources.exit;
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(93, 22);
+            this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.Image = global::Properties.Resources.about;
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
+            this.helpToolStripMenuItem.Text = "Help";
+            this.helpToolStripMenuItem.Click += new System.EventHandler(this.helpToolStripMenuItem_Click);
+            // 
+            // Form1
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(462, 442);
+            this.Controls.Add(this.groupBox_Logs);
+            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.groupBox_Setting);
+            this.Controls.Add(this.btnStart);
+            this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MainMenuStrip = this.menuStrip1;
+            this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Atuo Presser 1.0 - Nguyen Van Vuong 1510289";
+            this.Load += new System.EventHandler(this.Form1_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.txtTime)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtReleaseTime)).EndInit();
             this.groupBox_Setting.ResumeLayout(false);
             this.groupBox_Setting.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_LoopTime)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox_Logs.ResumeLayout(false);
-            base.ResumeLayout(false);
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
         }
 
-        [DllImport("user32.dll")]
-        public static extern void keybd_event(byte bVk, byte bScan, int dwFlags, int dwExtraInfo);
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            Process.Start("https://community.bistudio.com/wiki/DIK_KeyCodes");
-        }
 
         public void logToBox(string message)
         {
@@ -249,10 +404,10 @@
                 object selectedItem = this.comboBox_Button.SelectedItem;
                 if (selectedItem == null)
                 {
-                    MessageBox.Show("Vui l\x00f2ng chọn một ph\x00edm để spam", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                    MessageBox.Show("Please select a button", "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                     return false;
                 }
-                Keys kCode = (Keys) Enum.Parse(typeof(Keys), selectedItem.ToString());
+                Keys kCode = (Keys)Enum.Parse(typeof(Keys), selectedItem.ToString());
                 Keyboard.KeyDown(kCode);
                 Thread.Sleep(int.Parse(this.txtReleaseTime.Value.ToString()));
                 Keyboard.KeyUp(kCode);
@@ -261,25 +416,11 @@
             }
             catch (Exception exception)
             {
-                MessageBox.Show(exception.ToString(), "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                MessageBox.Show(exception.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                 return false;
             }
         }
 
-        public void Send_Key(short Keycode)
-        {
-            INPUT[] pInputs = new INPUT[1];
-            pInputs[0].type = 1;
-            pInputs[0].ki.wScan = Keycode;
-            pInputs[0].ki.dwFlags = 8;
-            pInputs[0].ki.time = 0;
-            pInputs[0].ki.dwExtraInfo = IntPtr.Zero;
-            SendInput(1, pInputs, Marshal.SizeOf(typeof(INPUT)));
-            this.logToBox("Sent key code " + Keycode.ToString());
-        }
-
-        [DllImport("user32.dll")]
-        private static extern uint SendInput(uint nInputs, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex=0, SizeConst=1)] INPUT[] pInputs, int cbSize);
         private void timer_Tick(object sender, EventArgs e)
         {
             this.send_Code();
@@ -293,46 +434,26 @@
             }
         }
 
-        [StructLayout(LayoutKind.Sequential)]
-        private struct HARDWAREINPUT
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            public int uMsg;
-            public short wParamL;
-            public short wParamH;
+            DialogResult ret = MessageBox.Show("Are you sure ?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk);
+            if (ret == DialogResult.Yes)
+            {
+                System.Windows.Forms.Application.Exit();
+            }
         }
 
-        [StructLayout(LayoutKind.Explicit)]
-        private struct INPUT
+        private void helpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            [FieldOffset(4)]
-            public Form1.HARDWAREINPUT hi;
-            [FieldOffset(4)]
-            public Form1.KEYBDINPUT ki;
-            [FieldOffset(4)]
-            public Form1.MOUSEINPUT mi;
-            [FieldOffset(0)]
-            public int type;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct KEYBDINPUT
-        {
-            public short wVk;
-            public short wScan;
-            public int dwFlags;
-            public int time;
-            public IntPtr dwExtraInfo;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct MOUSEINPUT
-        {
-            public int dx;
-            public int dy;
-            public int mouseData;
-            public int dwFlags;
-            public int time;
-            public IntPtr dwExtraInfo;
+            // Ref: https://www.codeproject.com/Articles/117657/InputManager-library-Track-user-input-and-simulate
+            MessageBox.Show("-Author: 1510289 Nguyen Van Vuong\n" +
+                "- Hotkey: Ctrl + F7\n" +
+                "- Email: nguyenvanvuong972@gmail.com\n" +
+                "- Thank for shynet-InputManager\n" +
+                "-----------------\n" +
+                "Note:\n" +
+                "- The unit of time is milliseconds\n" +
+                "- Loop =0 is infinity", "About", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
     }
 }
