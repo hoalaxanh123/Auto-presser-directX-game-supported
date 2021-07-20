@@ -39,6 +39,9 @@
         private Label label5;
         KeyboardHook hook = new KeyboardHook();
 
+        private int logLength = 0;
+        private int maxLogLeng = 30;
+
         public Form1()
         {
             this.InitializeComponent();
@@ -424,6 +427,12 @@
         private void timer_Tick(object sender, EventArgs e)
         {
             this.send_Code();
+            this.logLength += 1;
+            if (this.logLength == maxLogLeng)
+            {
+                logLength = 0;
+                this.richTextBox_Log.Clear();
+            }
         }
 
         public static class EnumUtil
